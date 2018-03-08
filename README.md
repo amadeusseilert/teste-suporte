@@ -20,7 +20,7 @@ Caros candidatos, leiam atentamente as instruções neste README para realizar o
   - O usuário poderá compartilhar uma informação pessoal e ter a possibilidade de marcar se ela é verdadeira ou não
   - Ao compartilhar irá para o mural que será visível por todos os usuários
   - Neste post terá dois botões para que outros possam dizer se acreditam ou não na informação
-  - Mostrar no perfil o rank do usuário de acordo com as assertividades dos usuários classificando entre honesto ou mentiroso 
+  - Mostrar no perfil o ranking do usuário de acordo com as assertividades dos usuários classificando entre honesto ou mentiroso 
   
 2. Criar um back-end
   - Criar a lógica para o registro e login via rede social
