@@ -13,7 +13,7 @@ Caros candidatos, leiam atentamente as instruções neste README para realizar o
 
 ## Tarefas do teste:
 
-**NOTE:** Você está livre em usar o que desejar. Apenas, gostaria de uma explicação do porquê da sua escolha.
+**NOTE:** Você está livre em usar o framework que desejar. Apenas, gostaria de uma explicação do porquê da sua escolha.
 
 1. Criar um front-end simples para postagens entre usuários.
   - O usuário precisa se cadastrar e se logar via Rede Social (Facebook ou Twitter ou Google)
