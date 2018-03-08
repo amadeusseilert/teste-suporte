@@ -50,7 +50,7 @@ Caros candidatos, leiam atentamente as instruções neste README para realizar o
 - Código limpo
 - Conhecimento do fluxo da aplicação
 - Conhecimento das melhores práticas.
-- Componntização.
+- Componentização.
 - Conhecimento de Docker.
 - Prover o sistema em alguma cloud como a Heroku.
 - Criar um endpoint para healthcheck 
