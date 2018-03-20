@@ -1,10 +1,14 @@
-<html>
-<head>
-    <title>OAuth Flask Demo</title>
-</head>
-<body>
-<h1>OAuth Demo</h1>
-<h2>I don't know you!</h2>
-<p><a href="{{ url_for('auth.oauth_authorize', provider='google') }}">Login with Google</a></p>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2>Welcome to Sincere</h2>
+    <p>
+        Earn points for guessing the truth about others stories or give yours if you guess it wrong.
+    </p>
+    <div style="width: 200px">
+        <a href="{{ url_for('auth.oauth_authorize', provider='google') }}" class="btn btn-block btn-social btn-google"
+           role="button" aria-pressed="true"><span class="fa fa-google"></span>Login with Google</a>
+    </div>
+</div>
+</div>
+{% endblock %}

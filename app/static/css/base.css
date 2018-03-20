@@ -1,0 +1,22 @@
+body {
+       position: absolute;
+       top: 0px; /* Header Height */
+       bottom: 20px; /* Footer Height */
+       width: 100%;
+       background-color: rgba(100, 100, 150, 0.1);
+    }
+
+
+.new-post {
+    position: fixed;
+    right: 0px;
+    left: 200px;
+    padding: 20px;
+    z-index: 1;
+    background-color: #efeff480
+}
+
+.post-card {
+    background-color: #719bb34d;
+    margin: 5px;
+}

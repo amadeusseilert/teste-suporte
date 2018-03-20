@@ -1,9 +1,68 @@
-<html>
-<head>
-    <title>User Share</title>
-</head>
-<body>
-<h2>Hi, {{ current_user.name }}!</h2>
-<p><a href="{{ url_for('auth.logout') }}">Logout</a></p>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+
+<div class="sidenav">
+    <div class="sidenav-element">
+        <img id="profile-picture" class="card-img-top img-circle" src="{{ current_user.picture }}"
+             alt="Profile picture" style="width:100%">
+    </div>
+    <div class="sidenav-element">
+        <h3 class="card-title">{{ current_user.name }}</h3>
+        <h4>Points: {{ current_user.points }}</h4>
+
+    </div>
+    <div class="sidenav-element">
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-warning" role="button">Logout</a>
+    </div>
+</div>
+<div class="new-post">
+    <form action="{{ url_for('home.index') }}" method="post">
+        {{ form.hidden_tag() }}
+        <h3>New Post</h3>
+        <div class="form-group">
+            {{ form.text(style="resize: none; width: 100%") }}<br>
+            {% for error in form.text.errors %}
+            <span class="bg-danger">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div class="form-check" style="float: left">
+            {{ form.truth }}
+            {{ form.truth.label }}<br>
+        </div>
+        {{ form.submit(class_="btn btn-primary pull-right") }}
+    </form>
+</div>
+
+<div class="main">
+    <script>
+        function makeGuess(post_id, guess) {
+            $("#guess-form").ajaxSubmit({url: "/home/" + post_id + "/" + guess, type: "post"})
+        }
+    </script>
+
+    <form id="guess-form">
+        {% for post in posts %}
+        <div class="card text-center post-card">
+            <div class="card-header">
+                {{post.author.name}} posted:
+            </div>
+            <div class="card-block">
+                <p class="card-text">{{post.text}}</p>
+                {% if post.author.id != current_user.id and not post.already_guessed(current_user) %}
+                <button type="button" class="btn btn-success btn-sm guess" onclick="makeGuess('{{post.id}}', '1')">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </button>
+                <button type="button" class="btn btn-danger btn-sm guess" onclick="makeGuess('{{post.id}}', '0')">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+                {% endif %}
+            </div>
+            <div class="card-footer text-muted">
+                {{post.time_delta}}
+            </div>
+        </div>
+    </form>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,7 +1,5 @@
 from unittest import TestCase
 
-from flask import url_for
-
 from app.instance import create_app, db
 from config import DevelopmentTestingConfig
 
