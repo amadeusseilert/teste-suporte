@@ -1,11 +1,9 @@
 # Teste básico Allgoo
 
-# Teste básico Allgoo
-
 Projeto Web Python 3 com a framework Flask e as bibliotecas Flask-Login, OAuth e Flask-MongoEngine.
 Flask é considerada uma microframework baseada no Werkzeug e Jinja2. Possibilitando criar aplicações web com pouquissimas
 linhas de código. Flask-Login é usada para controlar os endpoints que demandam usuário autenticado, que é fornecido pelo OAuth.
-MongoEngine é uma ORM que possibilita utilizar a banco de dados NoSQL Mongo.
+MongoEngine é uma ORM que possibilita utilizar a banco de dados NoSQL Mongo. MongoDB oferece facilidades para escalar aplicações distribuídas como redes sociais.
 
 ## Configuração
 ### Máquina Virtual
