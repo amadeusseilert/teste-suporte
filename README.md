@@ -44,11 +44,11 @@ pip install -r requirements.txt
 Atenção: É preciso ter o client Mongo em execução nas configurações padrões (localhost:27017).
 Para inserir alguns dados de exemplo, basta executar o comando:
 ```bash
-python run.py --init-db
+python wsgi.py --init-db
 ```
 Em seguida, inicialize a aplicação:
 ```bash
-python run.py
+python wsgi.py
 ```
 
 Pronto, para acessar aplicação, basta acessar a URL [localhost:5000](http://127.0.0.1:5000):
