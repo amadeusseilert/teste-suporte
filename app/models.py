@@ -9,7 +9,14 @@ class User(UserMixin, db.Document):
     social_id = db.StringField(required=True)
     name = db.StringField(required=True)
     picture = db.StringField(required=True)
-    score = db.FloatField(default=0.0)
+
+    @property
+    def score(self):
+        author_score = Post.objects(author=self).sum('author_score')
+        guesses = Guess.objects(user=self)
+        right_guess_score = guesses.sum('right_guess_share')
+        wrong_guess_score = guesses.sum('wrong_guess_share')
+        return author_score + right_guess_score - wrong_guess_score
 
 
 class Post(db.Document):
@@ -17,6 +24,10 @@ class Post(db.Document):
     date = db.DateTimeField(default=datetime.datetime.now())
     truth = db.BooleanField(required=True)
     author = db.ReferenceField(User)
+
+    author_score = db.FloatField(default=0.0)
+    right_guess_share = db.FloatField(default=0.0)
+    wrong_guess_share = db.FloatField(default=0.0)
 
     @property
     def time_delta(self):
@@ -54,27 +65,28 @@ class Guess(db.Document):
     guess = db.BooleanField(required=True)
 
     @classmethod
-    def update_score(cls, amount, post, guesses):
-        author = post.author
-        author.score -= amount
-        share = len(guesses) / amount
-        for guesser in (g.user for g in guesses):
-            guesser.score += share
+    def update_score(cls, post):
+        total_author = 0.0
+        right_guesses = cls.objects(post=post, guess=post.truth)
+        wrong_guesses_count = len(right_guesses)
+        if wrong_guesses_count > cls.MINIMUM_COUNT:
+            amount = cls.SCALE_FACTOR * (wrong_guesses_count - cls.MINIMUM_COUNT)
+            total_author -= amount
+            post.right_guess_share = amount / wrong_guesses_count
+        
+        wrong_guesses = cls.objects(post=post, guess=(not post.truth))
+        wrong_guesses_count = len(wrong_guesses)
+        if wrong_guesses_count > cls.MINIMUM_COUNT:
+            amount = cls.SCALE_FACTOR * (wrong_guesses_count - cls.MINIMUM_COUNT)
+            total_author += amount
+            post.wrong_guess_share = amount / wrong_guesses_count
+
+        post.author_score = total_author
+        post.save()
 
     @classmethod
     def guess_post(cls, user, post, guess):
         # Save the new guess
-
-        cls(user=user, post=post, guess=bool(int(guess))).save()
-
+        cls(user=user, post=post, guess=guess).save()
         # Update right guesses score
-        guesses = cls.objects(post=post, guess=post.truth)
-        amount = cls.SCALE_FACTOR * (len(guesses) - cls.MINIMUM_COUNT)
-        if len(guesses) > cls.MINIMUM_COUNT:
-            cls.update_score(amount, post, guesses)
-
-        # Update wrong guesses score
-        guesses = cls.objects(post=post, guess=(not post.truth))
-        amount = cls.SCALE_FACTOR * (len(guesses) - cls.MINIMUM_COUNT)
-        if len(guesses) > cls.MINIMUM_COUNT:
-            cls.update_score(amount, post, guesses)
+        cls.update_score(post)

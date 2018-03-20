@@ -1,59 +1,56 @@
 # Teste básico Allgoo
 
-Caros candidatos, leiam atentamente as instruções neste README para realizar o teste.
+# Teste básico Allgoo
 
-> Antes de começar, prepare seu ambiente.
+Projeto Web Python 3 com a framework Flask e as bibliotecas Flask-Login, OAuth e Flask-MongoEngine.
+Flask é considerada uma microframework baseada no Werkzeug e Jinja2. Possibilitando criar aplicações web com pouquissimas
+linhas de código. Flask-Login é usada para controlar os endpoints que demandam usuário autenticado, que é fornecido pelo OAuth.
+MongoEngine é uma ORM que possibilita utilizar a banco de dados NoSQL Mongo.
 
-**Este teste requer:**
-- Sua IDE favorita
-- Ambiente de desenvolvimento com Python 3.5+
-- Banco de dados (MongoDB, MySQL)
+## Configuração
+### Máquina Virtual
+É recomendável utilizar uma máquina virtual python para executar o projeto. Entretanto, caso desejável executar o projeto com o interpretador previamente instalado, pule para o próximo tópico.
 
---------
+Para criar a máquina virtual, basta executar o seguintes comando:
 
-## Tarefas do teste:
+Linux:
+```bash
+python3 -m venv /pasta-projeto/env
+```
 
-**NOTE:** Você está livre em usar o framework que desejar. Apenas, gostaria de uma explicação do porquê da sua escolha.
+Windows:
+```bash
+c:\>c:\Python35\python -m venv \pasta-projeto\env
+```
 
-1. Criar um front-end simples para postagens entre usuários.
-  - O usuário precisa se cadastrar e se logar via Rede Social (Facebook ou Twitter ou Google)
-  - O usuário poderá compartilhar uma informação pessoal e ter a possibilidade de marcar se ela é verdadeira ou não
-  - Ao compartilhar irá para o mural que será visível por todos os usuários
-  - Neste post terá dois botões para que outros possam dizer se acreditam ou não na informação
-  - Mostrar no perfil o ranking do usuário de acordo com as assertividades dos usuários classificando entre honesto ou mentiroso 
-  
-2. Criar um back-end
-  - Criar a lógica para o registro e login via rede social
-  - Criar os endpoints necessários para envio da informação, leitura no moral por todos e escolha da veracidade da informação.
-  - Se mais de 3 usuários acertarem o que a informação é, o usuário que deu a informação perde 1 ponto que será dividido entre os 3 e a cada novo usuário o ponto dobra. Exemplo:
+c:\>c:\Python35\python -m venv c:\path\to\myenv
+OBS: É possível que você tenha que instalar a [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) antes na sua máquina.
 
+Em seguida, ative a máquina virtual executando o seguinte comando:
 
-    - 3 pessoas acertam = 1 ponto / 3 usuários
-    - 4 pessoas acertam = 2 pontos / 4 usuários
-    - 5 pessoas acertam = 4 pontos / 5 usuários
+Linux:
+```bash
+. venv/bin/activate
+```
+Windows:
+```bash
+\venv\Scripts\activate
+```
+### Instalando as Dependências
+Com a máquina ativada, é necesário instalar as dependências do projeto com o client PIP. Portanto, execute o seguinte comando:
+```bash
+pip install -r requirements.txt
+```
 
-    O mesmo vale para os erros, quando os usuários erram a informação, o ponto é calculado pela quantidade de usuários que erraram (usando o mesmo critério acima), todos os pontos vão para o usuário que deu a informação e são retiradas as porcentagens dos usuários que erraram.
+## Inicializando a Aplicação
+Atenção: É preciso ter o client Mongo em execução nas configurações padrões (localhost:27017).
+Para inserir alguns dados de exemplo, basta executar o comando:
+```bash
+python run.py --init-db
+```
+Em seguida, inicialize a aplicação:
+```bash
+python run.py
+```
 
-  - Apenas participa quem vota
-  - Toda transação de pontos deve ser mapeada e garantindo a retirada e envio dos pontos de cada participante.
-   
-## Instruções adicionais
-
-- Faça um fork do repositório
-- Testes não são opcionais
-- Depois de terminado, envie-nos o link do repositório.
-- Deixe comentários, caso tenha alguma dúvida.
-- Implementações sem um README serão automaticamente rejeitadas.
-
-## Bonus / Atividades Opcionais
-
-- Código limpo
-- Conhecimento do fluxo da aplicação
-- Conhecimento das melhores práticas.
-- Componentização.
-- Conhecimento de Docker.
-- Prover o sistema em alguma cloud como a Heroku.
-- Criar um endpoint para healthcheck 
-   - para a rota `/healthcheck`
-   - proponha quais seriam as informações essenciais em um healthcheck ou se não tem necessidade.
-- nginx ou alternativa simples de webserver
+Pronto, para acessar aplicação, basta acessar a URL [localhost:5000](http://127.0.0.1:5000):
