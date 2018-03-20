@@ -20,8 +20,6 @@ Windows:
 ```bash
 c:\>c:\Python35\python -m venv \pasta-projeto\env
 ```
-
-c:\>c:\Python35\python -m venv c:\path\to\myenv
 OBS: É possível que você tenha que instalar a [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) antes na sua máquina.
 
 Em seguida, ative a máquina virtual executando o seguinte comando:
