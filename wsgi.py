@@ -24,8 +24,8 @@ def populate_database(app):
         Post(text='I am an Amazonian', date=now, truth=True, author=wwoman).save()
         Post(text='My car is visible.', date=now, truth=False, author=wwoman).save()
 
-        Guess(user=superman, post=p1, guess=True).save()
-        Guess(user=wwoman, post=p1, guess=True).save()
+        Guess(user=superman, post=p1, guess=False).save()
+        Guess(user=wwoman, post=p1, guess=False).save()
 
 
 if __name__ == '__main__':

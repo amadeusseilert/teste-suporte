@@ -14,7 +14,7 @@ home_bp = Blueprint('home', __name__, template_folder='templates', url_prefix='/
 @login_required
 def index():
     form = NewPostForm(request.form)
-    posts = Post.objects().all()
+    posts = Post.objects().order_by('-date')
 
     if form.validate_on_submit() and request.method == 'POST':
         author = User.objects(id=current_user.id).get()
@@ -43,6 +43,6 @@ def make_guess(post_id, guess):
         return redirect(url_for('home.index')), 400
 
     Guess.guess_post(user, post, guess)
-    data = dict(component=post.id.__str__(), tg=post.true_guesses, fg=post.false_guesses)
+    data = dict(component=post.id.__str__(), tg=post.true_guesses, fg=post.false_guesses, user_score=user.score)
     return json.dumps(data), 200
 

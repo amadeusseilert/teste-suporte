@@ -8,6 +8,7 @@ function makeGuess(post_id, guess) {
             $('#button-group-' + data['component']).remove();
             $('#true-counter-' + data['component']).text(data['tg']);
             $('#false-counter-' + data['component']).text(data['fg']);
+            $('#user-score').text(data['user_score']);
         }
     })
 }

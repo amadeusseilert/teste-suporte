@@ -63,8 +63,7 @@ class Post(db.Document):
 
 class Guess(db.Document):
 
-    MINIMUM_COUNT = 2
-    SCALE_FACTOR = 2.0
+    MINIMUM_COUNT = 3
 
     user = db.ReferenceField(User)
     post = db.ReferenceField(Post)
@@ -76,16 +75,16 @@ class Guess(db.Document):
         # Right guesses
         guesses = cls.objects(post=post, guess=post.truth)
         guesses_count = guesses.count()
-        if guesses_count > cls.MINIMUM_COUNT:
-            amount = cls.SCALE_FACTOR * guesses_count - cls.MINIMUM_COUNT
+        if guesses_count >= cls.MINIMUM_COUNT:
+            amount = 1 << (guesses_count - cls.MINIMUM_COUNT)
             total_author -= amount
             post.right_guess_share = amount / guesses_count
 
         # Wrong guesses
         guesses = cls.objects(post=post, guess=(not post.truth))
         guesses_count = guesses.count()
-        if guesses_count > cls.MINIMUM_COUNT:
-            amount = cls.SCALE_FACTOR * guesses_count - cls.MINIMUM_COUNT
+        if guesses_count >= cls.MINIMUM_COUNT:
+            amount = 1 << (guesses_count - cls.MINIMUM_COUNT)
             total_author += amount
             post.wrong_guess_share = amount / guesses_count
 

@@ -8,7 +8,7 @@
     </div>
     <div class="sidenav-element">
         <h3 class="card-title">{{ current_user.name }}</h3>
-        <h4>Points: {{ current_user.score }}</h4>
+        <h4>Points: <span id="user-score">{{ current_user.score }}</span></h4>
 
     </div>
     <div class="sidenav-element">
@@ -44,11 +44,11 @@
         </div>
         <div class="card-block">
             <p class="card-text">{{post.text}}</p>
-            {% if post.author.id != current_user.id and not post.already_guessed(current_user) %}
             <div>
                 <span id="true-counter-{{post.id}}" class="text-success">{{post.true_guesses}}</span>
                 <span id="false-counter-{{post.id}}" class="text-danger">{{post.false_guesses}}</span>
             </div>
+            {% if post.author.id != current_user.id and not post.already_guessed(current_user) %}
             <div id="button-group-{{post.id}}">
                 <button id="" type="button" class="btn btn-success btn-sm guess" onclick="makeGuess('{{post.id}}', '1')">
                     <span class="glyphicon glyphicon-ok"></span>
