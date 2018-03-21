@@ -18,11 +18,14 @@ def populate_database(app):
         wwoman = User(social_id='321', name='Diana Prince', picture='//').save()
 
         now = datetime.datetime.now()
-        Post(text='I am poor.', date=now, truth=False, author=batman).save()
+        p1 = Post(text='I am poor.', date=now, truth=False, author=batman).save()
         Post(text='I can beat the Superman.', date=now, truth=True, author=batman).save()
         Post(text='I have no weakness.', date=now, truth=False, author=superman).save()
         Post(text='I am an Amazonian', date=now, truth=True, author=wwoman).save()
         Post(text='My car is visible.', date=now, truth=False, author=wwoman).save()
+
+        Guess(user=superman, post=p1, guess=True).save()
+        Guess(user=wwoman, post=p1, guess=True).save()
 
 
 if __name__ == '__main__':

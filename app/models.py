@@ -1,5 +1,6 @@
 import datetime
 
+from bson import Code
 from flask_login import UserMixin
 
 from app.instance import db
@@ -10,13 +11,16 @@ class User(UserMixin, db.Document):
     name = db.StringField(required=True)
     picture = db.StringField(required=True)
 
+    SCORE_MAP = Code('function(){emit(this.id, [this.post.right_guesses_share, this.post.wrong_guesses_share]);}')
+    SCORE_REDUCE = Code('function(key, values){return [Array.sum(values[0]), Array.sum(values[1])];}')
+
     @property
     def score(self):
         author_score = Post.objects(author=self).sum('author_score')
-        guesses = Guess.objects(user=self)
-        right_guess_score = guesses.sum('right_guess_share')
-        wrong_guess_score = guesses.sum('wrong_guess_share')
-        return author_score + right_guess_score - wrong_guess_score
+        guesses = Guess.objects(user=self).only('post')
+        right_guesses_score = sum(g.post.right_guess_share for g in guesses)
+        wrong_guesses_score = sum(g.post.wrong_guess_share for g in guesses)
+        return '{:.2f}'.format(author_score + right_guesses_score - wrong_guesses_score)
 
 
 class Post(db.Document):
@@ -24,6 +28,8 @@ class Post(db.Document):
     date = db.DateTimeField(default=datetime.datetime.now())
     truth = db.BooleanField(required=True)
     author = db.ReferenceField(User)
+    true_guesses = db.IntField(default=0)
+    false_guesses = db.IntField(default=0)
 
     author_score = db.FloatField(default=0.0)
     right_guess_share = db.FloatField(default=0.0)
@@ -67,19 +73,21 @@ class Guess(db.Document):
     @classmethod
     def update_score(cls, post):
         total_author = 0.0
-        right_guesses = cls.objects(post=post, guess=post.truth)
-        wrong_guesses_count = len(right_guesses)
-        if wrong_guesses_count > cls.MINIMUM_COUNT:
-            amount = cls.SCALE_FACTOR * (wrong_guesses_count - cls.MINIMUM_COUNT)
+        # Right guesses
+        guesses = cls.objects(post=post, guess=post.truth)
+        guesses_count = guesses.count()
+        if guesses_count > cls.MINIMUM_COUNT:
+            amount = cls.SCALE_FACTOR * guesses_count - cls.MINIMUM_COUNT
             total_author -= amount
-            post.right_guess_share = amount / wrong_guesses_count
-        
-        wrong_guesses = cls.objects(post=post, guess=(not post.truth))
-        wrong_guesses_count = len(wrong_guesses)
-        if wrong_guesses_count > cls.MINIMUM_COUNT:
-            amount = cls.SCALE_FACTOR * (wrong_guesses_count - cls.MINIMUM_COUNT)
+            post.right_guess_share = amount / guesses_count
+
+        # Wrong guesses
+        guesses = cls.objects(post=post, guess=(not post.truth))
+        guesses_count = guesses.count()
+        if guesses_count > cls.MINIMUM_COUNT:
+            amount = cls.SCALE_FACTOR * guesses_count - cls.MINIMUM_COUNT
             total_author += amount
-            post.wrong_guess_share = amount / wrong_guesses_count
+            post.wrong_guess_share = amount / guesses_count
 
         post.author_score = total_author
         post.save()
@@ -88,5 +96,11 @@ class Guess(db.Document):
     def guess_post(cls, user, post, guess):
         # Save the new guess
         cls(user=user, post=post, guess=guess).save()
-        # Update right guesses score
+        if guess is True:
+            post.true_guesses += 1
+            post.save()
+        else:
+            post.false_guesses += 1
+            post.save()
+        # Update guesses score
         cls.update_score(post)

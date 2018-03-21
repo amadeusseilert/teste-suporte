@@ -1,6 +1,6 @@
 from bson import ObjectId
 from bson.errors import InvalidId
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, json
 from flask_login import login_required, current_user
 from mongoengine import DoesNotExist
 
@@ -14,7 +14,7 @@ home_bp = Blueprint('home', __name__, template_folder='templates', url_prefix='/
 @login_required
 def index():
     form = NewPostForm(request.form)
-    posts = Post.objects.all()
+    posts = Post.objects().all()
 
     if form.validate_on_submit() and request.method == 'POST':
         author = User.objects(id=current_user.id).get()
@@ -32,6 +32,8 @@ def make_guess(post_id, guess):
     try:
         post_id = ObjectId(post_id)
         post = Post.objects(id=post_id).get()
+        if post.author == current_user:
+            raise InvalidId
     except (TypeError, InvalidId, DoesNotExist):
         return redirect(url_for('home.index')), 400
 
@@ -41,5 +43,6 @@ def make_guess(post_id, guess):
         return redirect(url_for('home.index')), 400
 
     Guess.guess_post(user, post, guess)
-    return redirect(url_for('home.index'))
+    data = dict(component=post.id.__str__(), tg=post.true_guesses, fg=post.false_guesses)
+    return json.dumps(data), 200
 

@@ -8,7 +8,7 @@
     </div>
     <div class="sidenav-element">
         <h3 class="card-title">{{ current_user.name }}</h3>
-        <h4>Points: {{ current_user.points }}</h4>
+        <h4>Points: {{ current_user.score }}</h4>
 
     </div>
     <div class="sidenav-element">
@@ -34,34 +34,35 @@
 </div>
 
 <div class="main">
-    <script>
-        function makeGuess(post_id, guess) {
-            $("#guess-form").ajaxSubmit({url: "/home/" + post_id + "/" + guess, type: "post"})
-        }
-    </script>
-
     <form id="guess-form">
-        {% for post in posts %}
-        <div class="card text-center post-card">
-            <div class="card-header">
-                {{post.author.name}} posted:
+    </form>
+
+    {% for post in posts %}
+    <div class="card text-center post-card">
+        <div class="card-header">
+            {{post.author.name}} posted:
+        </div>
+        <div class="card-block">
+            <p class="card-text">{{post.text}}</p>
+            {% if post.author.id != current_user.id and not post.already_guessed(current_user) %}
+            <div>
+                <span id="true-counter-{{post.id}}" class="text-success">{{post.true_guesses}}</span>
+                <span id="false-counter-{{post.id}}" class="text-danger">{{post.false_guesses}}</span>
             </div>
-            <div class="card-block">
-                <p class="card-text">{{post.text}}</p>
-                {% if post.author.id != current_user.id and not post.already_guessed(current_user) %}
-                <button type="button" class="btn btn-success btn-sm guess" onclick="makeGuess('{{post.id}}', '1')">
+            <div id="button-group-{{post.id}}">
+                <button id="" type="button" class="btn btn-success btn-sm guess" onclick="makeGuess('{{post.id}}', '1')">
                     <span class="glyphicon glyphicon-ok"></span>
                 </button>
                 <button type="button" class="btn btn-danger btn-sm guess" onclick="makeGuess('{{post.id}}', '0')">
                     <span class="glyphicon glyphicon-remove"></span>
                 </button>
-                {% endif %}
             </div>
-            <div class="card-footer text-muted">
-                {{post.time_delta}}
-            </div>
+            {% endif %}
         </div>
-    </form>
+        <div class="card-footer text-muted">
+            {{post.time_delta}}
+        </div>
+    </div>
     {% endfor %}
 </div>
 
