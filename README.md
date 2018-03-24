@@ -26,7 +26,7 @@ Em seguida, ative a máquina virtual executando o seguinte comando:
 
 Linux:
 ```bash
-. venv/bin/activate
+source venv/bin/activate
 ```
 Windows:
 ```bash
